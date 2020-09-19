@@ -14,7 +14,7 @@ export class CanventButton extends DomListener {
 		this.settings = settings;
 
 		this.domlist = null;
-		this.btnHandler = getMouseAreaPosition(this.coords, this.reset);
+		this.btnHandler = getMouseAreaPosition(this.coords, this.settings.common, this.reset);
 
 		this.init();
 	}
@@ -25,8 +25,6 @@ export class CanventButton extends DomListener {
 			let { 
 				r: comR, 
 				fill: comFill,
-				x: comX,
-				y: comY,
 				w: comW,
 				h: comH } = this.settings.common;
 
@@ -34,9 +32,7 @@ export class CanventButton extends DomListener {
 			fill = fill ? fill : comFill;
 			h = h ? h : comH;
 			w = w ? w : comW;
-			x = x ? x : comX;
-			y = y ? y : comY;
-			
+
 			if (mx === x && my === y) {
 				fill = color;
 			}
@@ -56,7 +52,9 @@ export class CanventButton extends DomListener {
 	}
 
 	mousemoveHandler = (e) => {
-		this.btnHandler(e, ({x, y}) => this.update(x, y, 'yellow'));
+		const hoverColor = this.settings.common.hover || 'white';
+
+		this.btnHandler(e, ({x, y}) => this.update(x, y, hoverColor));
 	}
 
 	clickHandler = (e) => {
@@ -68,14 +66,19 @@ export class CanventButton extends DomListener {
 	}
 }
 
-function getMouseAreaPosition(coords, reset) {
+function getMouseAreaPosition(coords, common, reset) {
 	return function(e, handler) {
 		const x = e.clientX;
 		const y = e.clientY;
 
 		for (let coord of coords) {
-			if (x >= coord.x && x <= coord.x + coord.w &&
-					y >= coord.y && y <= coord.y + coord.h) {
+			const cH = coord.h || common.h;
+			const cW = coord.w || common.w;
+
+			if (x >= coord.x && 
+					x <= coord.x + cW &&
+					y >= coord.y && 
+					y <= coord.y + cH) {
 				handler(coord);
 				return;
 			}
