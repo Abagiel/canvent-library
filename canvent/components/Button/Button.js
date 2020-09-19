@@ -1,4 +1,5 @@
 import { DomListener } from '../DomListener/DomListener';
+import { CanventText } from '../Text/Text';
 
 import { changeCursor } from '../tools/utils';
 
@@ -14,7 +15,9 @@ export class CanventButton extends DomListener {
 		this.settings = settings;
 
 		this.domlist = null;
-		this.btnHandler = getMouseAreaPosition(this.coords, this.settings.common, this.reset);
+		this.text = new CanventText(ctx, coords, settings.common);
+
+		this.btnHandler = getMouseAreaPosition(coords, settings.common, this.reset);
 
 		this.init();
 	}
@@ -27,6 +30,7 @@ export class CanventButton extends DomListener {
 				fill: comFill,
 				w: comW,
 				h: comH } = this.settings.common;
+			let textColor = '';
 
 			r = r ? r : comR;
 			fill = fill ? fill : comFill;
@@ -35,9 +39,11 @@ export class CanventButton extends DomListener {
 
 			if (mx === x && my === y) {
 				fill = color;
+				textColor = this.settings.common.colorHover;
 			}
 
 			this.ctx.roundRect(x, y, w, h, fill, r, stroke);
+			this.text.create(coord, textColor);
 		});
 	}
 
@@ -52,7 +58,7 @@ export class CanventButton extends DomListener {
 	}
 
 	mousemoveHandler = (e) => {
-		const hoverColor = this.settings.common.hover || 'white';
+		const hoverColor = this.settings.common.hover || 'black';
 
 		this.btnHandler(e, ({x, y}) => this.update(x, y, hoverColor));
 	}
