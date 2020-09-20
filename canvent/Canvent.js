@@ -1,6 +1,7 @@
 import { roundRect } from './components/tools/extensions';
 
 import { CanventButton } from './components/Button/Button';
+import { CanventChart } from './components/Chart/Chart';
 
 export class Canvent {
 	constructor(canvas, ctx) {
@@ -16,6 +17,11 @@ export class Canvent {
 		};
 		const btns = new CanventButton(this.ctx, coords, settings);
 		btns.create();
+	}
+
+	createChart(data = [], settings) {
+		const chart = new CanventChart(this.ctx, data, settings);
+		chart.create();
 	}
 }
 

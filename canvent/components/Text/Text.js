@@ -1,8 +1,7 @@
 export class CanventText {
-	constructor(ctx, coords, common) {
+	constructor(ctx, common) {
 		this.ctx = ctx;
 
-		this.coords = coords;
 		this.common = common;
 	}
 
