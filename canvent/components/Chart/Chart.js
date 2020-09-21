@@ -75,14 +75,16 @@ export class CanventChart {
 
 	createVerticalChart = (data, i) => {
 		const { fill, strokeColor, value } = data;
-		const { x, y, h, w, gap } = this.settings;
+		const { x, y, h, w, gap = 0, line = 2 } = this.settings;
 		const length = this.data.length;
 		const rectH = h / this.wholeArc * value;
-		const rectW = w / length - (gap || 0);
-		const rectX = x + (w / length * i) + (gap || 0) / 2;
-		const rectY = y + h - rectH;
+		const rectW = (w - line - gap * (length - 1)) / length;
+		const rectX = x + (rectW * i + gap * i) + line / 2;
+		const rectY = y + h - rectH - line / 2;
 
 		this.ctx.beginPath();
+		this.ctx.lineWidth = line;
+		this.ctx.strokeStyle = this.settings.strokeColor;
 		this.ctx.rect(x, y, w, h);
 		this.ctx.stroke()
 		this.ctx.closePath();
@@ -101,14 +103,16 @@ export class CanventChart {
 
 	createHorizontalChart = (data, i) => {
 		const { fill, strokeColor, value } = data;
-		const { x, y, h, w, gap } = this.settings;
+		const { x, y, h, w, gap = 0, line = 2 } = this.settings;
 		const length = this.data.length;
 		const rectW = w / this.wholeArc * value;
-		const rectH = h / length - (gap || 0);
-		const rectY = y + (h / length * i) + (gap || 0) / 2;
-		const rectX = x;
+		const rectH = (h - line - gap * (length - 1)) / length;
+		const rectY = y + (rectH * i + gap * i) + line / 2;
+		const rectX = x + line / 2;
 
 		this.ctx.beginPath();
+		this.ctx.lineWidth = line;
+		this.ctx.strokeStyle = this.settings.strokeColor;
 		this.ctx.rect(x, y, w, h);
 		this.ctx.stroke()
 		this.ctx.closePath();
