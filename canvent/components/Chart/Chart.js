@@ -6,7 +6,7 @@ import { capitalize } from '../tools/utils';
 export class CanventChart {
 	constructor(ctx, data, settings) {	
 		this.ctx = ctx;
-		this.data = data;
+		this.data = sort(settings.sort, data);
 		this.settings = settings;
 
 		this.wholeArc = 0;
@@ -78,18 +78,7 @@ export class CanventChart {
 		const rectX = x + (rectW * i + gap * i) + line / 2;
 		const rectY = y + h - rectH - line / 2;
 
-		this.ctx.beginPath();
-		this.ctx.rect(x, y, w, h);
-		stroke(this.ctx, this.settings.strokeColor, line);
-		this.ctx.closePath();
-
-		this.ctx.beginPath();
-		fillRect(this.ctx, rectX, rectY, rectW, rectH, color);
-
-		if (this.settings.stroke) {
-			stroke(this.ctx, strokeColor, line);
-		}
-		this.ctx.closePath();
+		vertHorChartsRender(this.ctx, x, y, w, h, this.settings.strokeColor, rectX, rectY, rectW, rectH, strokeColor, line, this.settings.stroke, color);
 	}
 
 	createHorizontalChart = (data, i) => {
@@ -102,19 +91,23 @@ export class CanventChart {
 		const rectY = y + (rectH * i + gap * i) + line / 2;
 		const rectX = x + line / 2;
 
-		this.ctx.beginPath();
-		this.ctx.rect(x, y, w, h);
-		stroke(this.ctx, this.settings.strokeColor, line);
-		this.ctx.closePath();
-
-		this.ctx.beginPath();
-		fillRect(this.ctx, rectX, rectY, rectW, rectH, color);
-
-		if (this.settings.stroke) {
-			stroke(this.ctx, strokeColor, line);
-		}
-		this.ctx.closePath();
+		vertHorChartsRender(this.ctx, x, y, w, h, this.settings.strokeColor, rectX, rectY, rectW, rectH, strokeColor, line, this.settings.stroke, color);
 	}
+}
+
+function vertHorChartsRender(ctx, x, y, w, h, mainStrokeColor, rectX, rectY, rectW, rectH, strokeColor, line, mainStroke, color) {
+	ctx.beginPath();
+	ctx.rect(x, y, w, h);
+	stroke(ctx, mainStrokeColor, line);
+	ctx.closePath();
+
+	ctx.beginPath();
+	fillRect(ctx, rectX, rectY, rectW, rectH, color);
+
+	if (mainStroke) {
+		stroke(ctx, strokeColor, line);
+	}
+	ctx.closePath();
 }
 
 function stroke(ctx, color, width) {
@@ -135,4 +128,14 @@ function combine(...args) {
 
 function composite(ctx, type) {
 	ctx.globalCompositeOperation = type;
+}
+
+function sort(type, data) {
+	if (!type) return data;
+
+	if (type === 'down') {
+		return data.sort((a, b) => a.value - b.value);
+	} else {
+		return data.sort((a, b) => b.value - a.value);
+	}
 }
